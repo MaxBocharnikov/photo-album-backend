@@ -1,11 +1,8 @@
-var knex = require('knex')({
-    client: 'mysql',
-    connection: {
-        host: 'localhost',
-        user: 'root',
-        password: '123456',
-        database: 'photo_album'
-    }
+const connection = require('../connection.json')
+
+const knex = require('knex')({
+  client: 'mysql',
+  connection
 });
 
 exports.knex = knex;
