@@ -21,13 +21,8 @@ function getCurrentUser(userId) {
     .select('user_id as id', 'login', 'name')
     .where('user_id', userId)
     .then(users => {
-      if (!users[0]) {
-        return {
-          id: 0,
-          name: ''
-        };
-      } else {
-        return users[0];
+      if (users.length === 0) {
+        throw new Error ('No such user')
       }
     });
 }

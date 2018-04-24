@@ -1,35 +1,12 @@
-var cookieSession = require('cookie-session');
-var express = require('express');
-var bodyParser = require('body-parser');
-var multer = require('multer');
-var path = require('path')
-var port = 3000;
+const cookieSession = require('cookie-session');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path')
+const port = 3000;
 
-var storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, './images')
-  },
-  filename: function (req, file, callback) {
-    console.log(file)
-    callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-  }
-});
+const app = express();
 
-var upload = multer({
-  storage: storage
-})
-
-var sql = {
-  comments: require("./sql/comments"),
-  photos: require("./sql/photos"),
-  ratings: require("./sql/ratings"),
-  users: require("./sql/users")
-};
-
-var app = express();
-
-app.use(function (req, res, next) {
-  //res.setHeader('Access-Control-Allow-Origin', 'http://192.168.0.205:8080');
+app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,accept,content-type');
@@ -39,143 +16,18 @@ app.use(function (req, res, next) {
 
 app.use(express.static('images'));
 
-//Add post data to req.body
+// Add post data to req.body
 app.use(bodyParser.json());
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   console.log(req.method + ', url: ' + req.url);
   next();
 });
-//Get cookies
-app.use(cookieSession({
-  name: 'session',
-  keys: ['key1', 'key2']
-}));
-
-app.use(function (req, res, next) {
-  req.session.id = (req.session.id || 0);
-  next();
-});
-
-//Comments
-app.post('/addComment', function (req, res, next) {
-  sql.comments.addComment(req.body.postId, req.session.id, req.body.text)
-    .then((id) => {
-      res.send(id);
-      res.end();
-    });
-});
-
-app.post('/deleteCommentById', function (req, res, next) {
-  console.log(req.body);
-  sql.comments.deleteCommentById(req.body.id)
-    .then(() => {
-      res.send();
-      res.end();
-    });
-});
-
-app.post('/changeComment', function (req, res, next) {
-  sql.comments.changeComment(req.body.id, req.body.text)
-    .then(() => {
-      res.send();
-      res.end();
-    });
-});
-
-app.get('/getCommentsByPhotoId/:photoId', function (req, res, next) {
-  sql.comments.getCommentsByPhotoId(req.params.photoId)
-    .then(comments => {
-      res.send(comments);
-      res.end();
-    });
-});
-
-
-//CurrentUser
-app.get('/getCurrentUser', function (req, res, next) {
-  console.log(req.session.id);
-  if (req.session.id == 0) {
-    res.send({
-      id: 0,
-      name: '',
-      login: ''
-    });
-    res.end();
-  } else {
-    sql.users.getCurrentUser(req.session.id)
-      .then(user => {
-        res.send(user);
-        res.end();
-      });
-  }
-});
-
-app.post('/logout', function (req, res, next) {
-  console.log(req.session);
-  req.session.id = 0;
-  console.log(req.session.id);
-  res.send({
-    id: 0,
-    name: '',
-    login: ''
-  });
-  res.end();
-});
-
-//Photos
-app.post('/addPhoto', upload.single('file'), function (req, res, next) {
-  console.log(req.file)
-  console.log(req.file.filename)
-  sql.photos.addPhoto(req.session.id, 'http://localhost:3000/' + req.file.filename, req.body.title, req.body.description)
-    .then(photo => {
-      res.send(photo);
-      res.end();
-    });
-});
-
-app.post('/deletePhotoById', function (req, res, next) {
-  sql.photos.deletePhotoById(req.body.photoId, req.session.id)
-    .then(() => {
-      res.send();
-      res.end();
-    });
-});
-
-app.post('/changePhoto', function (req, res, next) {
-  sql.photos.changePhoto(req.body.id, req.body.title, req.body.description, req.session.id)
-    .then(photo => {
-      res.send(photo);
-      res.end();
-    });
-});
-
-app.get('/getUserPhotos', function (req, res, next) {
-  sql.photos.getUserPhotos(req.session.id)
-    .then(photos => {
-      res.send(photos);
-      res.end();
-    });
-});
-
-app.get('/getAllPhotos', function (req, res, next) {
-  sql.photos.getAllPhotos(req.session.id)
-    .then(photos => {
-      res.send(photos);
-      res.end();
-    });
-});
-
-//Rating
-app.post('/addRating', function (req, res, next) {
-  sql.ratings.addRating(req.body.photoId, req.body.rating, req.session.id)
-    .then(() => {
-      res.send();
-      res.end();
-    });
-});
 
 app.use('', require('./modules/auth'))
+app.use('/photos', require('./modules/photos'))
+app.use('/comments', require('./modules/comments'))
+app.use('/rating', require('./modules/rating'))
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500)
@@ -183,6 +35,6 @@ app.use((err, req, res, next) => {
   res.send(err.message)
 })
 
-app.listen(port, function () {
-  console.log('App listening on port ' + port + '!');
+app.listen(port, () => {
+  console.log(`App listening on port ${port}!`);
 });

@@ -1,10 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const {
-  register,
-  login
-} = require('../sql/users')
+const { register, login, getCurrentUser } = require('../sql/users')
 const { insertToken } = require('../sql/tokens')
+const authorize = require('../middlewares/authorize')
 
 router.post('/register', function (req, res, next) {
   register(req.body.login, req.body.password, req.body.name)
@@ -21,5 +19,8 @@ router.post('/login', function (req, res, next) {
     .catch(error => next(error));
 });
 
+router.get('/current-user', authorize, (req, res, next) => {
+  res.json({ user: req.currentUser })
+});
 
 module.exports = router
