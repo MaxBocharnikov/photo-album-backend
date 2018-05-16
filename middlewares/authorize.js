@@ -9,9 +9,11 @@ const auth = (req, res, next) => {
   }
 
   const auth = authorization.parse(authHeader)
+  console.log(auth);
 
   if (auth.scheme !== 'Basic') {
     return fail(res)
+    
   }
 
   const token = auth.token
