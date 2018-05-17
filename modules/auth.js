@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { register, login, getCurrentUser } = require('../sql/users')
+const { register, login, getCurrentUser, changeUser } = require('../sql/users')
 const { insertToken } = require('../sql/tokens')
 const authorize = require('../middlewares/authorize')
 
@@ -21,6 +21,14 @@ router.post('/login', function (req, res, next) {
 
 router.get('/current-user', authorize, (req, res, next) => {
   res.json({ user: req.currentUser })
+});
+router.put('/changeUser', authorize, (req, res, next) => {
+  changeUser(req.currentUser.id, req.body.login, req.body.name)
+  .then((data) => {
+    console.log(data);
+    res.json(data)
+  })
+  .catch(error => next(error));
 });
 
 module.exports = router

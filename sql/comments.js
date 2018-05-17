@@ -19,8 +19,19 @@ function getCommentsByPhotoId(photoId) {
 
 function changeComment(comment_id, comment) {
     return knex.raw(`update comments set comment = '${comment}' , edited = now() where comment_id = ${comment_id};`);
+   
 }
 
+function getCommentById(comment_id){
+    return knex('comments as c')
+    .select('c.comment_id as id', 'c.photo_id', 'c.user_id', 'c.commented', 'c.edited', 'c.comment')
+    .where('c.comment_id', comment_id)
+    .then(comments => {
+     return comments.map(comment => {
+         return normalizeComment(comment);
+          });
+     });
+}
 function deleteCommentById(comment_id) {
     return knex('comments')
         .where({
@@ -44,4 +55,5 @@ function addComment(photo_id, user_id, comment) {
 exports.getCommentsByPhotoId = getCommentsByPhotoId;
 exports.changeComment = changeComment;
 exports.deleteCommentById = deleteCommentById;
+exports.getCommentById = getCommentById;
 exports.addComment = addComment;
