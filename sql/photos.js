@@ -1,9 +1,9 @@
 var knex = require("./sqlConnectionOptions").knex;
 
 function normalizePhoto(photo) {
-  photo.commonRating = photo.commonRating == null ? 0 : photo.commonRating;
-  photo.userRating = photo.userRating == null ? 0 : photo.userRating;
-  photo.updated = photo.updated == '0000-00-00 00:00:00' ? null : photo.updated;
+  photo.commonRating = photo.commonRating == null ? 0 : Math.round(photo.commonRating);
+  //photo.userRating = photo.userRating == null ? 0 : photo.userRating;
+  photo.editDate = photo.editDate == null? photo.uploadDate: photo.editDate
   return photo;
 }
 
@@ -25,15 +25,11 @@ function getUserPhotos(userId) {
     });
 }
 
-function getAllPhotos(userId) {
-  var query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, avg(ratingTable.rating) as commonRating, userRatingTable.rating as userRating
+function getAllPhotos() {
+  var query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, (select avg(rating) from ratings where photo_id = p.photo_id) as commonRating
   from photos p
 left join (select user_id, name from users) u
 on p.user_id = u.user_id
-left join (select photo_id, rating from ratings) as ratingTable
-on p.photo_id = ratingTable.photo_id
-left join (select photo_id, user_id, rating from ratings where user_id = ${userId}) userRatingTable
-on p.photo_id = userRatingTable.photo_id
 group by p.photo_id`;
   return knex.raw(query)
     .then(photos => {

@@ -29,8 +29,8 @@ router.get('/getUserPhotos', authorize, (req, res, next) => {
     .catch(error => next(error))
 });
 
-router.get('/getAllPhotos', authorize, (req, res, next) => {
-  getAllPhotos(req.currentUser.id)
+router.get('/getAllPhotos', (req, res, next) => {
+  getAllPhotos()
     .then(photos => res.json(photos))
     .catch(error => next(error))
 });

@@ -20,7 +20,7 @@ router.delete('/deleteCommentById/:commentId', authorize, function (req, res, ne
     .catch(error => next(error));
 });
 
-router.get('/getCommentsByPhotoId/:photoId', authorize, function (req, res, next) {
+router.get('/getCommentsByPhotoId/:photoId', /*authorize,*/ function (req, res, next) {
   getCommentsByPhotoId(req.params.photoId)
     .then(comments => res.json({ comments }))
     .catch(error => next(error));
