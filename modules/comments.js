@@ -26,7 +26,7 @@ router.get('/getCommentsByPhotoId/:photoId', /*authorize,*/ function (req, res, 
     .catch(error => next(error));
 });
 
-router.get('/getCommentById/:commentId', authorize, function(req, res,next){
+router.get('/getCommentById/:commentId', /*authorize,*/ function(req, res,next){
   getCommentById(req.params.commentId)
   .then(comment => res.json({ comment }))
   .catch(error => next(error));

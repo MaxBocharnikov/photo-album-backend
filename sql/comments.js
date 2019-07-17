@@ -1,7 +1,7 @@
 var knex = require("./sqlConnectionOptions").knex;
 
 function normalizeComment(comment) {
-    comment.edited = comment.edited == '0000-00-00 00:00:00' ? null : comment.edited;
+    comment.edited = comment.edited == null ? comment.date : comment.edited;
     return comment;
 }
 
