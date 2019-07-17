@@ -3,7 +3,7 @@ var knex = require("./sqlConnectionOptions").knex;
 function normalizePhoto(photo) {
   photo.commonRating = photo.commonRating == null ? 0 : Math.round(photo.commonRating);
   //photo.userRating = photo.userRating == null ? 0 : photo.userRating;
-  photo.editDate = photo.editDate == null? photo.uploadDate: photo.editDate;
+  photo.editDate = photo.editDate == null ? photo.uploadDate: photo.editDate;
   return photo;
 }
 

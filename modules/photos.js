@@ -4,12 +4,15 @@ const { addPhoto, changePhoto, getUserPhotos, deletePhotoById, getAllPhotos } = 
 const upload = require('../middlewares/upload')
 const authorize = require('../middlewares/authorize')
 
-router.post('', authorize, upload.single('file'), (req, res, next) => {
+router.post('', /*authorize,*/ upload.single('file'), (req, res, next) => {
+    console.log(req);
+    console.log(req.body);
   if(req.file){
-  addPhoto(req.currentUser.id, 'http://localhost:3000/' + req.file.filename, req.body.title, req.body.description)
+  //addPhoto(req.currentUser.id, 'http://localhost:3000/' + req.file.filename, req.body.title, req.body.description)
+    addPhoto(1, 'http://localhost:3000/' + req.file.filename, req.body.title, req.body.description)
     .then(photo => res.json(photo))
     .catch(error => next(error))
-  } 
+  }
 });
 
 router.put('/:photoId', authorize, (req, res, next) => {
@@ -23,8 +26,9 @@ router.delete('/:photoId', authorize, (req, res, next) => {
     .then(() => res.json());
 });
 
-router.get('/getUserPhotos', authorize, (req, res, next) => {
-  getUserPhotos(req.currentUser.id)
+router.get('/getUserPhotos', /*authorize, */ (req, res, next) => {
+  //getUserPhotos(req.currentUser.id)
+    getUserPhotos(1)
     .then(photos => res.json(photos))
     .catch(error => next(error))
 });
