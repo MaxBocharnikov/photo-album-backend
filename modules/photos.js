@@ -5,24 +5,24 @@ const upload = require('../middlewares/upload')
 const authorize = require('../middlewares/authorize')
 
 router.post('', /*authorize,*/ upload.single('file'), (req, res, next) => {
-    console.log(req);
-    console.log(req.body);
   if(req.file){
   //addPhoto(req.currentUser.id, 'http://localhost:3000/' + req.file.filename, req.body.title, req.body.description)
-    addPhoto(1, 'http://localhost:3000/' + req.file.filename, req.body.title, req.body.description)
+    addPhoto(1, req.file.filename, req.body.title, req.body.description)
     .then(photo => res.json(photo))
     .catch(error => next(error))
   }
 });
 
-router.put('/:photoId', authorize, (req, res, next) => {
-  changePhoto(req.body.id, req.body.title, req.body.description, req.currentUser.id)
+router.put('/:photoId', /*authorize,*/ (req, res, next) => {
+  //changePhoto(req.body.id, req.body.title, req.body.description, req.currentUser.id)
+    changePhoto(req.body.id, req.body.title, req.body.description, 1)
     .then(photo => res.json(photo))
     .catch(error => next(error))
 });
 
-router.delete('/:photoId', authorize, (req, res, next) => {
-  deletePhotoById(req.params.photoId, req.currentUser.id)
+router.delete('/:photoId', /*authorize,*/ (req, res, next) => {
+  //deletePhotoById(req.params.photoId, req.currentUser.id)
+  deletePhotoById(req.params.photoId, 1)
     .then(() => res.json());
 });
 
