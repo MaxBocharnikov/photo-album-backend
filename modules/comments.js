@@ -9,13 +9,13 @@ router.post('', /*authorize,*/ function (req, res, next) {
     .catch(error => next(error));
 });
 
-router.put('', authorize, function (req, res, next) {
+router.put('',/*authorize,*/ function (req, res, next) {
   changeComment(req.body.commentId, req.body.text)
     .then((comment) => res.json(comment))
     .catch(error => next(error));
 });
 
-router.delete('/deleteCommentById/:commentId', authorize, function (req, res, next) {
+router.delete('/deleteCommentById/:commentId', /*authorize,*/ function (req, res, next) {
   deleteCommentById(req.params.commentId)
     .then(() => res.json())
     .catch(error => next(error));

@@ -37,7 +37,11 @@ function deleteCommentById(comment_id) {
         .where({
             comment_id: comment_id
         })
-        .del();
+        .del()
+        .then(id => {
+        return id;
+});
+
 }
 
 function addComment(photo_id, user_id, comment) {
