@@ -2,8 +2,9 @@ const express = require('express')
 const router = express.Router()
 const { addComment, changeComment, deleteCommentById, getCommentsByPhotoId, getCommentById } = require('../sql/comments')
 const authorize = require('../middlewares/authorize')
-router.post('', authorize, function (req, res, next) {
-  addComment(req.body.postId, req.currentUser.id, req.body.text)
+router.post('', /*authorize,*/ function (req, res, next) {
+  //addComment(req.body.postId, req.currentUser.id, req.body.text)
+    addComment(req.body.postId, 1, req.body.text)
     .then((id) => res.json(id))
     .catch(error => next(error));
 });
