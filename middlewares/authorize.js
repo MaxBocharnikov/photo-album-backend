@@ -3,7 +3,7 @@ const knex = require('../sql/sqlConnectionOptions').knex
 
 const auth = (req, res, next) => {
   const authHeader = req.get('authorization')
-
+    console.log(req.get('authorization'));
   if (!authHeader) {
     return fail(res)
   }
