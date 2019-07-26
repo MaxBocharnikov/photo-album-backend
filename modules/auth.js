@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { register, login, getCurrentUser, changeUser } = require('../sql/users')
+const { register, login, getCurrentUser, changeUser, checkLoginExistence } = require('../sql/users')
 const { insertToken } = require('../sql/tokens')
 const authorize = require('../middlewares/authorize')
 
@@ -18,6 +18,13 @@ router.post('/login', function (req, res, next) {
     .then(token => res.json(token))
     .catch(error => next(error));
 });
+
+router.post('/checkUserExistance', function (req, res, next) {
+    checkLoginExistence(req.body.login)
+        .then(answer => res.json({answer}))
+        .catch(error => next(error));
+});
+
 
 router.get('/current-user', authorize, (req, res, next) => {
   res.json({ user: req.currentUser })

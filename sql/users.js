@@ -27,11 +27,11 @@ function getCurrentUser(userId) {
     });
 }
 
-function checkLoginExistence(userId, login) {
+function checkLoginExistence(login) {
   return knex('users')
     .select('user_id as id', 'name', 'login')
     .where('login', login)
-    .andWhere('user_id', '<>', userId)
+    //.andWhere('user_id', '<>', userId)
     .then(users => {
       if (users[0]) {
         return true;

@@ -6,7 +6,7 @@ const authorize = require('../middlewares/authorize')
 
 router.post('', authorize, upload.single('file'), (req, res, next) => {
   if(req.file){
-  addPhoto(req.currentUser.id, 'http://localhost:3000/' + req.file.filename, req.body.title, req.body.description)
+  addPhoto(req.currentUser.id, req.file.filename, req.body.title, req.body.description)
     .then(photo => res.json(photo))
     .catch(error => next(error))
   }
