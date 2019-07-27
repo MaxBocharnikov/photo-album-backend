@@ -21,7 +21,7 @@ const auth = (req, res, next) => {
   knex
     .from('users')
     .innerJoin('tokens', 'users.user_id', 'tokens.user_id')
-    .select('users.user_id as id', 'users.name')
+    .select('users.user_id as id', 'users.name', 'users.login')
     .where('tokens.id', token)
     .then(users => {
       const user = users[0]
