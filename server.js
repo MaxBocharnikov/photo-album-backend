@@ -31,6 +31,7 @@ app.use('', require('./modules/auth'))
 app.use('/photos', require('./modules/photos'))
 app.use('/comments', require('./modules/comments'))
 app.use('/rating', require('./modules/rating'))
+app.use('/likes', require('./modules/likes'))
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500)

@@ -9,7 +9,7 @@ function normalizePhoto(photo) {
 }
 
 function getUserPhotos(userId) {
-  var query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, avg(ratingTable.rating) as commonRating, count(commentLength.comment_id) as comments
+  var query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, avg(ratingTable.rating) as commonRating, count(commentLength.comment_id) as comments, (select count(*) from likes where likes.photo_id = p.photo_id) as likes
     from photos p
     left join (select user_id, name from users) u
     on p.user_id = u.user_id
@@ -27,7 +27,7 @@ function getUserPhotos(userId) {
 }
 
 function getAllPhotos() {
-  var query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, (select avg(rating) from ratings where photo_id = p.photo_id) as commonRating, count(commentLength.comment_id) as comments
+  var query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, (select avg(rating) from ratings where photo_id = p.photo_id) as commonRating, count(commentLength.comment_id) as comments, (select count(*) from likes where likes.photo_id = p.photo_id) as likes
       from photos p
     left join (select user_id, name from users) u
     on p.user_id = u.user_id
@@ -46,7 +46,7 @@ function changePhoto(photoId, title, description, userId) {
   var updateQuery = `update photos set title = '${title}' ,description='${description}' , updated = now() where photo_id = ` + photoId + `;`;
   return knex.raw(updateQuery)
     .then(() => {
-      var query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, avg(ratingTable.rating) as commonRating, count(commentLength.comment_id) as comments
+      var query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, avg(ratingTable.rating) as commonRating, count(commentLength.comment_id) as comments,(select count(*) from likes where likes.photo_id = p.photo_id) as likes
     from photos p
     left join (select user_id, name from users) u
     on p.user_id = u.user_id
@@ -82,7 +82,7 @@ function addPhoto(user_id, url, title, description) {
   return knex('photos')
     .insert({ user_id, url, title, description })
     .then(photoId => {
-      const query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, avg(ratingTable.rating) as commonRating, count(commentLength.comment_id) as comments
+      const query = `select p.photo_id as id, url as imageUrl, title, description, p.user_id as author_id, u.name as user, created as uploadDate, updated as editDate, avg(ratingTable.rating) as commonRating, count(commentLength.comment_id) as comments, (select count(*) from likes where likes.photo_id = p.photo_id) as likes
     from photos p
     left join (select user_id, name from users) u
     on p.user_id = u.user_id
