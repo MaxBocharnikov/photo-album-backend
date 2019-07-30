@@ -105,4 +105,15 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+CREATE TABLE `likes` (
+`like_id` int(11) NOT NULL AUTO_INCREMENT,
+`photo_id` int(11) DEFAULT NULL,
+`user_id` int(11) DEFAULT NULL,
+PRIMARY KEY (`like_id`),
+KEY `photos_photo_id_fk` (`photo_id`),
+KEY `user_id` (`user_id`),
+CONSTRAINT `photos_photo_id_fkl` FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`),
+CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8
+
 -- Dump completed on 2018-04-24  0:04:48
